@@ -24,7 +24,7 @@ class RpcError(Exception):
 
 
 class HidAgent:
-    def __init__(self, port, baud=921600, on_event=None, on_log=None):
+    def __init__(self, port, baud=115200, on_event=None, on_log=None):
         self.ser = serial.Serial(port, baud, timeout=0.05)
         # CP2102 DTR/RTS are wired to EN/IO0: keep them deasserted so we don't reset the board
         self.ser.dtr = False
@@ -109,7 +109,7 @@ class HidAgent:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", required=True)
-    ap.add_argument("--baud", type=int, default=921600)
+    ap.add_argument("--baud", type=int, default=115200)
     ap.add_argument("--monitor", action="store_true", help="print events/logs after call")
     ap.add_argument("method")
     ap.add_argument("params", nargs="?", help="JSON object")

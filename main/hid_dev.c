@@ -83,6 +83,9 @@ static void worker(void *arg)
             if (local.code) {
                 cJSON_AddNumberToObject(d, "code", local.code);
                 cJSON_AddStringToObject(d, "message", local.msg);
+            } else if (res) {
+                cJSON_AddItemToObject(d, "result", res);
+                res = NULL;
             }
             uart_proto_event("hid.done", d);
             cJSON_Delete(res);

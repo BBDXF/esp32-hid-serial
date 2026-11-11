@@ -76,7 +76,7 @@ static void set_defaults(app_config_t *c)
     c->http_enable = true;
     c->http_port = 80;
     c->mcp_enable = true;
-    c->uart_baud = 921600;
+    c->uart_baud = 115200;
 }
 
 esp_err_t config_init(void)

@@ -6,7 +6,8 @@
 - **Wi-Fi HTTP**（`/api/rpc`）
 - **MCP**（`/mcp`，可以直接接入 AI Agent）
 
-详细设计见 [docs/DESIGN.md](docs/DESIGN.md)。
+- 详细设计：[docs/DESIGN.md](docs/DESIGN.md)
+- API 参考（请求和应答示例）：[docs/API.md](docs/API.md)
 
 ## 构建与烧录
 

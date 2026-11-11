@@ -93,7 +93,7 @@ app_main
 ## 5. 串口协议
 
 ### 5.1 物理层与分帧
-- UART0（CP2102），默认 **921600 8N1**，无流控，可通过 `uart.baud` 修改，改后需重启。
+- UART0（CP2102），默认 **115200 8N1**（与 ESP-IDF 默认控制台波特率一致，串口监视器开箱即用），无流控；可通过 `uart.baud` 改为 230400/460800/921600 等，改后需重启。
 - **JSON Lines**：一行一条紧凑 JSON，以 `\n` 结尾，接收端兼容 `\r\n`。
 - JSON 字符串里的换行必须转义成 `\n`，所以原始字节 0x0A 只会出现在帧尾。要输入多行文本，直接在 `text` 字段里写转义字符就可以。
 - 接收端状态机（`uart_proto.c: feed_byte`）：
@@ -202,7 +202,7 @@ app_main
   - 校验方法名和 BLE 连接状态。
   - 复制参数，封装成 job 放进队列（满了返回 1002）。
   - 同步方法用信号量等待 worker 执行完；所有动作的耗时都有上限（`hold_ms ≤ 5 s`，文本 ≤ 1024 字节，批处理 ≤ 64 步）。
-- 异步方法（`hid.type`、`hid.batch`）立即返回，完成后发出 `hid.done {id, code?, message?}` 事件。
+- 异步方法（`hid.type`、`hid.batch`）立即返回，完成后发出 `hid.done {id, result}` 或 `hid.done {id, code, message}` 事件。
 - 键盘 6KRO：组合键先单独发一帧修饰键，再发普通键，松开顺序相反。这样能兼容某些对按键顺序敏感的主机。
 - `hid.type` 按 **US 键盘布局**把 ASCII 字符映射成按键。非 ASCII 字符计入 `skipped`，不会输入。中文请用输入法或剪贴板的方式（例如先在主机上设置好剪贴板，再发 `CTRL+V`）。
 - **防卡键**：有按键或按钮处于按下状态超过 `hid.auto_release_ms`（默认 5000 ms）时，worker 在空闲检查时自动 release_all。BLE 断开时清空内部按键状态。`sys.reboot` 前也会先松开所有按键。
@@ -245,7 +245,7 @@ app_main
 | `hid.keyboard` / `hid.mouse` / `hid.abs_pointer` / `hid.media` / `hid.gamepad` | 开 / 开 / 开 / 开 / 关 | 是，并需要重新配对 |
 | `hid.default_interval_ms` / `hid.auto_release_ms` | 8 / 5000 | 否 |
 | `http.enable` / `http.port` / `http.token` / `mcp.enable` | 开 / 80 / 空 / 开 | 端口和开关需要重启 |
-| `uart.baud` / `uart.auth_token` | 921600 / 空 | 波特率需要重启 |
+| `uart.baud` / `uart.auth_token` | 115200 / 空 | 波特率需要重启 |
 
 结构体变化时递增 `CFG_VERSION`，版本不匹配就回落到默认值。以后可以加迁移逻辑。
 
