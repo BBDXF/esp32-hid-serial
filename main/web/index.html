@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ESP32 HID Agent</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:720px;margin:2em auto;padding:0 1em;color:#222}
+h1{font-size:1.4em}fieldset{margin:1em 0;border:1px solid #ccc;border-radius:6px}
+label{display:flex;justify-content:space-between;align-items:center;margin:.35em 0;gap:1em}
+input[type=text],input[type=password],input[type=number]{flex:0 0 55%;padding:.3em}
+button{padding:.5em 1.2em;margin-right:.5em}#msg{margin-top:1em;white-space:pre-wrap;font-family:monospace}
+</style></head><body>
+<h1>ESP32 HID Agent</h1>
+<label>API Token <input id="token" type="password" placeholder="http.token（未设置可留空）"></label>
+<div id="status"></div>
+<form id="f"></form>
+<button onclick="save()">保存</button><button onclick="rpc('sys.reboot')">重启</button>
+<div id="msg"></div>
+<script>
+const groups={wifi:"Wi-Fi",ble:"蓝牙身份",hid:"HID",http:"HTTP / MCP",mcp:"HTTP / MCP",uart:"串口"};
+const H=()=>{const t=document.getElementById('token').value;return t?{'Authorization':'Bearer '+t}:{}};
+const msg=t=>document.getElementById('msg').textContent=t;
+async function load(){
+  const r=await fetch('/api/config',{headers:H()});if(!r.ok){msg('读取失败: '+r.status);return}
+  const c=await r.json(),f=document.getElementById('f');f.innerHTML='';const sets={};
+  for(const[k,v]of Object.entries(c)){const g=groups[k.split('.')[0]];
+    if(!sets[g]){const fs=document.createElement('fieldset');fs.innerHTML='<legend>'+g+'</legend>';f.appendChild(fs);sets[g]=fs}
+    const l=document.createElement('label');const typ=typeof v=='boolean'?'checkbox':typeof v=='number'?'number':(/pass|token/.test(k)?'password':'text');
+    l.innerHTML=`<span>${k}</span><input name="${k}" type="${typ}">`;const i=l.querySelector('input');
+    if(typ=='checkbox')i.checked=v;else i.value=v;sets[g].appendChild(l)}
+  const s=await rpc('wifi.status',null,true),b=await rpc('ble.status',null,true);
+  document.getElementById('status').textContent=`Wi-Fi: ${s?.state} ${s?.ip||''}  |  BLE: ${b?.state} ${b?.peer||''}`;
+}
+async function save(){
+  const o={};for(const i of document.querySelectorAll('#f input')){
+    o[i.name]=i.type=='checkbox'?i.checked:i.type=='number'?Number(i.value):i.value}
+  const r=await fetch('/api/config',{method:'POST',headers:{...H(),'Content-Type':'application/json'},body:JSON.stringify(o)});
+  const j=await r.json();msg(j.ok?(j.reboot_required?'已保存，需重启生效':'已保存'):'错误: '+j.error);
+}
+async function rpc(method,params,quiet){
+  const r=await fetch('/api/rpc',{method:'POST',headers:{...H(),'Content-Type':'application/json'},body:JSON.stringify({method,params})});
+  const j=await r.json();if(!quiet)msg(JSON.stringify(j));return j.result;
+}
+document.getElementById('token').addEventListener('change',load);load();
+</script></body></html>
