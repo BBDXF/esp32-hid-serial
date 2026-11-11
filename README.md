@@ -38,3 +38,7 @@ curl -s http://hid-agent.local/mcp -H 'Content-Type: application/json' \
 如果客户端只支持 stdio，可以这样桥接：`npx mcp-remote http://hid-agent.local/mcp`
 
 > 注意：修改 BLE 身份或 HID 配置后，需要先在电脑上删除旧配对，再执行 `ble.unpair` 并重启开发板。
+
+## License
+
+MIT, see [LICENSE](LICENSE).
