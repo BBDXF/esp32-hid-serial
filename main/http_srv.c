@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "esp_http_server.h"
+#include "esp_app_desc.h"
 #include "cJSON.h"
 #include "http_srv.h"
 #include "config.h"
@@ -166,7 +167,7 @@ static cJSON *mcp_handle(const cJSON *msg)
         cJSON_AddObjectToObject(caps, "tools");
         cJSON *si = cJSON_AddObjectToObject(res, "serverInfo");
         cJSON_AddStringToObject(si, "name", "esp32-hid-serial");
-        cJSON_AddStringToObject(si, "version", "1.0.0");
+        cJSON_AddStringToObject(si, "version", esp_app_get_description()->version);
         cJSON_AddStringToObject(res, "instructions",
             "Controls a computer through a Bluetooth HID keyboard/mouse. "
             "Prefer hid_click with x,y (0..1 fractions) for pointing. Call ble_status first to verify connection.");

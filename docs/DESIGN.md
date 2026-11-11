@@ -2,7 +2,7 @@
 
 | 项 | 内容 |
 |---|---|
-| 版本 | v1.0（协议版本 `proto = 1`） |
+| 版本 | v0.1.0（协议版本 `proto = 1`） |
 | 目标硬件 | ESP32-DevKitC-32U（ESP32-WROOM-32U，4 MB Flash，无 PSRAM，外接 2.4 GHz 天线） |
 | 框架 | ESP-IDF v5.3.x，NimBLE，esp_hid，esp_http_server，cJSON，mdns |
 | 用途 | 把开发板变成一个可编程的 BLE HID 设备（键盘 / 鼠标 / 绝对坐标指针 / 媒体键 / 手柄），通过 USB 串口或 Wi-Fi（HTTP / MCP）接收指令，模拟用户操作，用于自动化测试和 AI Agent 驱动的 UI 操作 |

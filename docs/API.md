@@ -1,6 +1,6 @@
 # ESP32-HID-Serial API 参考
 
-本文档适用于协议版本 `proto = 1`，对应固件 v1.x。设计原理见 [DESIGN.md](DESIGN.md)。
+本文档适用于协议版本 `proto = 1`，对应固件 v0.1.x。设计原理见 [DESIGN.md](DESIGN.md)。
 
 - [1. 通用约定](#1-通用约定)
 - [2. 传输方式](#2-传输方式)：串口、HTTP `/api/rpc`、HTTP `/api/config`、MCP `/mcp`
@@ -58,7 +58,7 @@
 3. 把 DTR 和 RTS 置为无效，否则板子可能被复位。
 
 ```
-← {"event":"sys.ready","data":{"fw":"1.0.0","proto":1,"reset_reason":"poweron"}}
+← {"event":"sys.ready","data":{"fw":"0.1.0","proto":1,"reset_reason":"poweron"}}
 → {"id":1,"method":"sys.ping"}
 ← {"id":1,"result":{"pong":true,"uptime_ms":5321}}
 ```
@@ -135,7 +135,7 @@ curl -s -X POST http://hid-agent.local/api/config -d '{"hid.default_interval_ms"
 ```json
 → {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"demo","version":"1"}}}
 ← {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-03-26","capabilities":{"tools":{}},
-   "serverInfo":{"name":"esp32-hid-serial","version":"1.0.0"},
+   "serverInfo":{"name":"esp32-hid-serial","version":"0.1.0"},
    "instructions":"Controls a computer through a Bluetooth HID keyboard/mouse. ..."}}
 → {"jsonrpc":"2.0","method":"notifications/initialized"}
 ← HTTP 202（无响应体）
@@ -182,7 +182,7 @@ curl -s -X POST http://hid-agent.local/api/config -d '{"hid.default_interval_ms"
 返回设备信息。
 ```
 → {"id":2,"method":"sys.info"}
-← {"id":2,"result":{"fw":"1.0.0","proto":1,"chip":"ESP32 rev3.1 cores=2","bt_mac":"24:6F:28:AA:BB:CE","heap_free":98234,"heap_min":81020}}
+← {"id":2,"result":{"fw":"0.1.0","proto":1,"chip":"ESP32 rev3.1 cores=2","bt_mac":"24:6F:28:AA:BB:CE","heap_free":98234,"heap_min":81020}}
 ```
 | 字段 | 说明 |
 |---|---|
@@ -200,7 +200,7 @@ curl -s -X POST http://hid-agent.local/api/config -d '{"hid.default_interval_ms"
 ```
 → {"id":3,"method":"sys.reboot","params":{"delay_ms":500}}
 ← {"id":3,"result":{"ok":true}}
-← {"event":"sys.ready","data":{"fw":"1.0.0","proto":1,"reset_reason":"software"}}
+← {"event":"sys.ready","data":{"fw":"0.1.0","proto":1,"reset_reason":"software"}}
 ```
 
 ### sys.factory_reset
